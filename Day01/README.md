@@ -58,7 +58,7 @@ Because the dial points at `0` a total of three times during this process, the p
 
 Analyze the rotations in your attached document. **What's the actual password to open the door?**
 > **My Answer**: 1191
-#### [Code](https://github.com/Kabiirk/advent-of-code-2020-entries/blob/main/Day01/Day1.py)
+#### [Code](https://github.com/Kabiirk/advent-of-code-2025-entries/blob/main/Day01/Day1.py)
 
 ------
 
@@ -91,4 +91,4 @@ Be careful: if the dial were pointing at `50`, a single rotation like `R1000` wo
 
 Using password method 0x434C49434B, **what is the password to open the door?**
 > **My Answer**: 6858
-#### [Code](https://github.com/Kabiirk/advent-of-code-2020-entries/blob/main/Day01/Day1Part2.py)
+#### [Code](https://github.com/Kabiirk/advent-of-code-2025-entries/blob/main/Day01/Day1Part2.py)
