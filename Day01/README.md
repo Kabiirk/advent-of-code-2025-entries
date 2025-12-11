@@ -52,7 +52,7 @@ The dial is rotated `L55` to point at `0`.\
 The dial is rotated `L1` to point at `99`.\
 The dial is rotated `L99` to point at `0`.\
 The dial is rotated `R14` to point at `14`.\
-The dial is rotated `L82` to point at `32`.\
+The dial is rotated `L82` to point at `32`.
 
 Because the dial points at `0` a total of three times during this process, the password in this example is `3`.
 
