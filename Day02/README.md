@@ -35,7 +35,7 @@ Adding up all the invalid IDs in this example produces `1227775554`.
 
 What do you get if you add up all of the invalid IDs?
 > **My Answer**: 22062284697
-#### [Code](https://github.com/Kabiirk/advent-of-code-2020-entries/blob/main/Day02/Day2.py)
+#### [Code](https://github.com/Kabiirk/advent-of-code-2025-entries/blob/main/Day02/Day2.py)
  
 ------
  
@@ -62,4 +62,4 @@ Adding up all the invalid IDs in this example produces `4174379265`.
 
 What do you get if you add up all of the invalid IDs using these new rules?
 > **My Answer**: 46666175279
-#### [Code](https://github.com/Kabiirk/advent-of-code-2020-entries/blob/main/Day02/Day2Part2.py)
+#### [Code](https://github.com/Kabiirk/advent-of-code-2025-entries/blob/main/Day02/Day2Part2.py)
