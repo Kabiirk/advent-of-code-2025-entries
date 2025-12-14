@@ -1,75 +1,62 @@
-### --- Day 3: Toboggan Trajectory ---
-With the toboggan login problems resolved, you set off toward the airport. While travel by toboggan might be easy, it's certainly not safe: there's very minimal steering and the area is covered in trees. You'll need to see which angles will take you near the fewest trees.
+### --- Day 3: Lobby ---
+You descend a short staircase, enter the surprisingly vast lobby, and are quickly cleared by the security checkpoint. When you get to the main elevators, however, you discover that each one has a red light above it: they're all **offline**.
 
-Due to the local geology, trees in this area only grow on exact integer coordinates in a grid. You make a map (your puzzle input) of the open squares (```.```) and trees (```#```) you can see. For example:
-```
-..##.......
-#...#...#..
-.#....#..#.
-..#.#...#.#
-.#...##..#.
-..#.##.....
-.#.#.#....#
-.#........#
-#.##...#...
-#...##....#
-.#..#...#.#
-```
-These aren't the only trees, though; due to something you read about once involving arboreal genetics and biome stability, the same pattern repeats to the right many times:
-```
-..##.........##.........##.........##.........##.........##.......  --->
-#...#...#..#...#...#..#...#...#..#...#...#..#...#...#..#...#...#..
-.#....#..#..#....#..#..#....#..#..#....#..#..#....#..#..#....#..#.
-..#.#...#.#..#.#...#.#..#.#...#.#..#.#...#.#..#.#...#.#..#.#...#.#
-.#...##..#..#...##..#..#...##..#..#...##..#..#...##..#..#...##..#.
-..#.##.......#.##.......#.##.......#.##.......#.##.......#.##.....  --->
-.#.#.#....#.#.#.#....#.#.#.#....#.#.#.#....#.#.#.#....#.#.#.#....#
-.#........#.#........#.#........#.#........#.#........#.#........#
-#.##...#...#.##...#...#.##...#...#.##...#...#.##...#...#.##...#...
-#...##....##...##....##...##....##...##....##...##....##...##....#
-.#..#...#.#.#..#...#.#.#..#...#.#.#..#...#.#.#..#...#.#.#..#...#.#  --->
-```
-You start on the open square (```.```) in the top-left corner and need to reach the bottom (below the bottom-most row on your map).
+"Sorry about that," an Elf apologizes as she tinkers with a nearby control panel. "Some kind of electrical surge seems to have fried them. I'll try to get them online soon."
 
-The toboggan can only follow a few specific slopes (you opted for a cheaper model that prefers rational numbers); start by counting all the trees you would encounter for the slope right 3, down 1:
+You explain your need to get further underground. "Well, you could at least take the escalator down to the printing department, not that you'd get much further than that without the elevators working. That is, you could if the escalator weren't also offline."
 
-From your starting position at the top-left, check the position that is right 3 and down 1. Then, check the position that is right 3 and down 1 from there, and so on until you go past the bottom of the map.
+"But, don't worry! It's not fried; it just needs power. Maybe you can get it running while I keep working on the elevators."
 
-The locations you'd check in the above example are marked here with ```O``` where there was an open square and ```X``` where there was a tree:
+There are batteries nearby that can supply emergency power to the escalator for just such an occasion. The batteries are each labeled with their joltage rating, a value from `1` to `9`. You make a note of their joltage ratings (your puzzle input). For example:
+
 ```
-..##.........##.........##.........##.........##.........##.......  --->
-#..O#...#..#...#...#..#...#...#..#...#...#..#...#...#..#...#...#..
-.#....X..#..#....#..#..#....#..#..#....#..#..#....#..#..#....#..#.
-..#.#...#O#..#.#...#.#..#.#...#.#..#.#...#.#..#.#...#.#..#.#...#.#
-.#...##..#..X...##..#..#...##..#..#...##..#..#...##..#..#...##..#.
-..#.##.......#.X#.......#.##.......#.##.......#.##.......#.##.....  --->
-.#.#.#....#.#.#.#.O..#.#.#.#....#.#.#.#....#.#.#.#....#.#.#.#....#
-.#........#.#........X.#........#.#........#.#........#.#........#
-#.##...#...#.##...#...#.X#...#...#.##...#...#.##...#...#.##...#...
-#...##....##...##....##...#X....##...##....##...##....##...##....#
-.#..#...#.#.#..#...#.#.#..#...X.#.#..#...#.#.#..#...#.#.#..#...#.#  --->
+987654321111111
+811111111111119
+234234234234278
+818181911112111
 ```
-In this example, traversing the map using this slope would cause you to encounter 7 trees.
 
-Starting at the top-left corner of your map and following a slope of ```right 3``` and ```down 1```, how many trees would you encounter?
-> **My Answer**: 203
-#### [Code](https://github.com/Kabiirk/advent-of-code-2020-entries/blob/main/Day03/Day3.py)
+The batteries are arranged into banks; each line of digits in your input corresponds to a single bank of batteries. Within each bank, you need to turn on exactly two batteries; the joltage that the bank produces is equal to the number formed by the digits on the batteries you've turned on. For example, if you have a bank like 12345 and you turn on batteries 2 and 4, the bank would produce 24 jolts. (You cannot rearrange batteries.)
+
+You'll need to find the largest possible joltage each bank can produce. In the above example:
+
+- In `(9)(8)7654321111111`, you can make the largest joltage possible, `98`, by turning on the first two batteries.
+- In `(8)1111111111111(9)`, you can make the largest joltage possible by turning on the batteries labeled `8` and `9`, producing `89` jolts.
+- In `2342342342342(7)(8)`, you can make `78` by turning on the last two batteries (marked `7` and `8`).
+- In `818181(9)1111(2)111`, the largest joltage you can produce is `92`.
+
+The total output joltage is the sum of the maximum joltage from each bank, so in this example, the total output joltage is `98` + `89` + `78` + `92` = `357`.
+
+There are many batteries in front of you. Find the maximum joltage possible from each bank; what is the total output joltage?
+> **My Answer**: 16927
+#### [Code](https://github.com/Kabiirk/advent-of-code-2025-entries/blob/main/Day03/Day3.py)
  
 ------
  
-### --- Day 3: Toboggan Trajectory(Part Two) ---
-Time to check the rest of the slopes - you need to minimize the probability of a sudden arboreal stop, after all.
+### --- Day 3: Lobby(Part Two) ---
+The escalator doesn't move. The Elf explains that it probably needs more joltage to overcome the **static friction** of the system and hits the big red "joltage limit safety override" button. You lose count of the number of times she needs to confirm "yes, I'm sure" and decorate the lobby a bit while you wait.
 
-Determine the number of trees you would encounter if, for each of the following slopes, you start at the top-left corner and traverse the map all the way to the bottom:
-```
-Right 1, down 1.
-Right 3, down 1. (This is the slope you already checked.)
-Right 5, down 1.
-Right 7, down 1.
-Right 1, down 2.
-```
-In the above example, these slopes would find ```2, 7, 3, 4,``` and ```2``` tree(s) respectively; multiplied together, these produce the answer ```336```.
+Now, you need to make the largest joltage by turning on exactly twelve batteries within each bank.
 
-What do you get if you multiply together the number of trees encountered on each of the listed slopes?
-> **My Answer**: 3316272960
-#### [Code](https://github.com/Kabiirk/advent-of-code-2020-entries/blob/main/Day03/Day3Part2.py)
+The joltage output for the bank is still the number formed by the digits of the batteries you've turned on; the only difference is that now there will be `12` digits in each bank's joltage output instead of two.
+
+Consider again the example from before:
+
+```
+987654321111111
+811111111111119
+234234234234278
+818181911112111
+```
+Now, the joltages are much larger:
+
+- In `(987654321111)111`, the largest joltage can be found by turning on everything except some `1`s at the end to produce `987654321111`.
+- In the digit sequence `(81111111111)111(9)`, the largest joltage can be found by turning on everything except some 1s, producing `811111111119`.
+- In `23(4)2(34234234278)`, the largest joltage can be found by turning on everything except a `2` battery, a `3` battery, and another `2` battery near the start to produce `434234234278`.
+- In `(8)1(8)1(8)1(911112111)`, the joltage `888911112111` is produced by turning on everything except some 1s near the front.
+
+The total output joltage is now much larger: `987654321111` + `811111111119` + `434234234278` + `888911112111` = `3121910778619`.
+
+What is the new total output joltage?
+> **My Answer**: 167384358365132
+#### [Code](https://github.com/Kabiirk/advent-of-code-2025-entries/blob/main/Day03/Day3Part2.py)

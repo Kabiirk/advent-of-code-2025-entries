@@ -1,30 +1,20 @@
-day3 = open("day3.txt", "r")
+# Data Parsing & Setup
+power_banks = []
+with open('day3.txt', 'r') as f:
+    for line in f:
+        line = line.strip()
+        power_banks.append(list( map(lambda x: int(x), line) ))
+f.close()
 
-count = 0
-terrain = []
+# Actual Solution
+total_output_joltage = 0
 
-for line in day3:
-    terrain.append(line.strip())
-day3.close()
+for bank in power_banks:
+    selected_pow = 0
+    for i in range(len(bank)):
+        for j in range(i+1, len(bank)):
+            selected_pow = max(selected_pow, (bank[i]*10) + bank[j] )
 
-length = len(terrain)
-tree_count = 0
-
-i = 0
-for x in terrain[::3]:
-    if(x[i]=="#"):
-        tree_count += 1
-    i = (i+1)%len(x)
-
-
-def calcTrees(h, v, inp):
-  x = 0
-  counter = 0
-  for i in inp[::v]:
-    if i[x] == "#":
-      counter += 1
-    x = (x+h)%len(i)
-  return counter
+    total_output_joltage += selected_pow
     
-
-print(calcTrees(3,1,terrain))
+print(total_output_joltage)
