@@ -1,121 +1,199 @@
-### --- Day 4: Passport Processing ---
-You arrive at the airport only to realize that you grabbed your North Pole Credentials instead of your passport. While these documents are extremely similar, North Pole Credentials aren't issued by a country and therefore aren't actually valid documentation for travel in most of the world.
+### --- Day 4: Printing Department ---
+You ride the escalator down to the printing department. They're clearly getting ready for Christmas; they have lots of large rolls of paper everywhere, and there's even a massive printer in the corner (to handle the really big print jobs).
 
-It seems like you're not the only one having problems, though; a very long line has formed for the automatic passport scanners, and the delay could upset your travel itinerary.
+Decorating here will be easy: they can make their own decorations. What you really need is a way to get further into the North Pole base while the elevators are offline.
 
-Due to some questionable network security, you realize you might be able to solve both of these problems at the same time.
+"Actually, maybe we can help with that," one of the Elves replies when you ask for help. "We're pretty sure there's a cafeteria on the other side of the back wall. If we could break through the wall, you'd be able to keep moving. It's too bad all of our forklifts are so busy moving those big rolls of paper around."
 
-The automatic passport scanners are slow because they're having trouble detecting which passports have all required fields. The expected fields are as follows:
+If you can optimize the work the forklifts are doing, maybe they would have time to spare to break through the wall.
+
+The rolls of paper (`@`) are arranged on a large grid; the Elves even have a helpful diagram (your puzzle input) indicating where everything is located.
+
+For example:
 ```
-byr (Birth Year)
-iyr (Issue Year)
-eyr (Expiration Year)
-hgt (Height)
-hcl (Hair Color)
-ecl (Eye Color)
-pid (Passport ID)
-cid (Country ID)
+..@@.@@@@.
+@@@.@.@.@@
+@@@@@.@.@@
+@.@@@@..@.
+@@.@@@@.@@
+.@@@@@@@.@
+.@.@.@.@@@
+@.@@@.@@@@
+.@@@@@@@@.
+@.@.@@@.@.
 ```
-Passport data is validated in batch files (your puzzle input). Each passport is represented as a sequence of key:value pairs separated by spaces or newlines. Passports are separated by blank lines.
 
-Here is an example batch file containing four passports:
+The forklifts can only access a roll of paper if there are **fewer than four** rolls of paper in the eight adjacent positions. If you can figure out which rolls of paper the forklifts can access, they'll spend less time looking and more time breaking down the wall to the cafeteria.
+
+In this example, there are `13` rolls of paper that can be accessed by a forklift (marked with `x`):
 ```
-ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
-byr:1937 iyr:2017 cid:147 hgt:183cm
-
-iyr:2013 ecl:amb cid:350 eyr:2023 pid:028048884
-hcl:#cfa07d byr:1929
-
-hcl:#ae17e1 iyr:2013
-eyr:2024
-ecl:brn pid:760753108 byr:1931
-hgt:179cm
-
-hcl:#cfa07d eyr:2025 pid:166559648
-iyr:2011 ecl:brn hgt:59in
+..xx.xx@x.
+x@@.@.@.@@
+@@@@@.x.@@
+@.@@@@..@.
+x@.@@@@.@x
+.@@@@@@@.@
+.@.@.@.@@@
+x.@@@.@@@@
+.@@@@@@@@.
+x.x.@@@.x.
 ```
-The first passport is valid - all eight fields are present. The second passport is invalid - it is missing ```hgt``` (the Height field).
 
-The third passport is interesting; the only missing field is ```cid```, so it looks like data from North Pole Credentials, not a passport at all! Surely, nobody would mind if you made the system temporarily ignore missing cid fields. Treat this "passport" as valid.
-
-The fourth passport is missing two fields, ```cid``` and ```byr```. Missing cid is fine, but missing any other field is not, so this passport is invalid.
-
-According to the above rules, your improved system would report 2 valid passports.
-
-Count the number of valid passports - those that have all required fields. Treat cid as optional. In your batch file, how many passports are valid?
-> **My Answer**: 202
-#### [Code](https://github.com/Kabiirk/advent-of-code-2020-entries/blob/main/Day04/Day4.py)
+Consider your complete diagram of the paper roll locations. How many rolls of paper can be accessed by a forklift?
+> **My Answer**: 1356
+#### [Code](https://github.com/Kabiirk/advent-of-code-2025-entries/blob/main/Day04/Day4.py)
 
 ------
 
-### --- Day 4: Passport Processing(Part Two) ---
-The line is moving more quickly now, but you overhear airport security talking about how passports with invalid data are getting through. Better add some data validation, quick!
+### --- Day 4: Printing Department(Part Two) ---
+Now, the Elves just need help accessing as much of the paper as they can.
 
-You can continue to ignore the cid field, but each other field has strict rules about what values are valid for automatic validation:
+Once a roll of paper can be accessed by a forklift, it can be **removed**. Once a roll of paper is removed, the forklifts might be able to access **more** rolls of paper, which they might also be able to remove. How many total rolls of paper could the Elves remove if they keep repeating this process?
 
-* ```byr (Birth Year)``` - four digits; at least ```1920``` and at most ```2002```.
-* ```iyr (Issue Year)``` - four digits; at least ```2010``` and at most ```2020```.
-* ```eyr (Expiration Year)``` - four digits; at least ```2020``` and at most ```2030```.
-* ```hgt (Height)``` - a number followed by either ```cm``` or ```in```:
-    * If ```cm```, the number must be at least ```150``` and at most ```193```.
-    * If ```in```, the number must be at least ```59``` and at most ```76```.
-* ```hcl (Hair Color)``` - a ```#``` followed by exactly six characters ```0-9``` or ```a-f```.
-* ```ecl (Eye Color)``` - exactly one of: ```amb```, ```blu```, ```brn```, ```gry```, ```grn```, ```hzl``` or ```oth```.
-* ```pid (Passport ID)``` - a nine-digit number, including leading zeroes.
-* ```cid (Country ID)``` - ignored, missing or not.
+Starting with the same example as above, here is one way you could remove as many rolls of paper as possible, using highlighted `@` (i.e. `(@)`) to indicate that a roll of paper is about to be removed, and using `x` to indicate that a roll of paper was just removed:
 
-
-Your job is to count the passports where all required fields are both present and valid according to the above rules. Here are some example values:
+Initial state:
 ```
-byr valid:   2002
-byr invalid: 2003
-
-hgt valid:   60in
-hgt valid:   190cm
-hgt invalid: 190in
-hgt invalid: 190
-
-hcl valid:   #123abc
-hcl invalid: #123abz
-hcl invalid: 123abc
-
-ecl valid:   brn
-ecl invalid: wat
-
-pid valid:   000000001
-pid invalid: 0123456789
+ .  . (@)(@) . (@)(@) @ (@) . 
+(@) @  @  .  @  .  @  .  @  @ 
+ @  @  @  @  @  . (@) .  @  @ 
+ @  .  @  @  @  @  .  .  @  . 
+(@) @  .  @  @  @  @  .  @ (@)
+ .  @  @  @  @  @  @  @  .  @ 
+ .  @  .  @  .  @  .  @  @  @ 
+(@) .  @  @  @  .  @  @  @  @ 
+ .  @  @  @  @  @  @  @  @  . 
+(@) . (@) .  @  @  @  . (@) . 
 ```
-Here are some invalid passports:
+
+Remove 13 rolls of paper:
 ```
-eyr:1972 cid:100
-hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926
-
-iyr:2019
-hcl:#602927 eyr:1967 hgt:170cm
-ecl:grn pid:012533040 byr:1946
-
-hcl:dab227 iyr:2012
-ecl:brn hgt:182cm pid:021572410 eyr:2020 byr:1992 cid:277
-
-hgt:59cm ecl:zzz
-eyr:2038 hcl:74454a iyr:2023
-pid:3556412378 byr:2007
+ .  .  x  x  .  x  x (@) x  . 
+ x  @  @  . (@) . (@) .  @ (@)
+(@) @  @  @  @  .  x  .  @  @ 
+(@) .  @  @  @  @  .  . (@) . 
+ x  @  .  @  @  @  @  . (@) x 
+ . (@) @  @  @  @  @  @  . (@)
+ . (@) .  @  .  @  .  @  @  @ 
+ x  .  @  @  @  .  @  @  @  @ 
+ . (@) @  @  @  @  @  @  @  . 
+ x  .  x  .  @  @  @  .  x  . 
 ```
-Here are some valid passports:
+
+Remove 12 rolls of paper:
 ```
-pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980
-hcl:#623a2f
-
-eyr:2029 ecl:blu cid:129 byr:1989
-iyr:2014 pid:896056539 hcl:#a97842 hgt:165cm
-
-hcl:#888785
-hgt:164cm byr:2001 iyr:2015 cid:88
-pid:545766238 ecl:hzl
-eyr:2022
-
-iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719
+ .  .  .  .  .  .  .  x  .  . 
+ . (@) @  .  x  .  x  . (@) x 
+ x  @  @  @  @  .  .  . (@)(@)
+ x  .  @  @  @  @  .  .  x  . 
+ . (@) .  @  @  @  @  .  x  . 
+ .  x  @  @  @  @  @  @  .  x 
+ .  x  .  @  .  @  .  @  @ (@)
+ .  .  @  @  @  .  @  @  @  @ 
+ .  x (@) @  @  @  @  @  @  . 
+ .  .  .  .  @  @  @  .  .  . 
 ```
-Count the number of valid passports - those that have all required fields and valid values. Continue to treat ```cid``` as optional. In your batch file, how many passports are valid?
-> **My Answer**: 137
-#### [Code](https://github.com/Kabiirk/advent-of-code-2020-entries/blob/main/Day04/Day4Part2.py)
+
+Remove 7 rolls of paper:
+```
+ .  .  .  .  .  .  .  .  .  . 
+ .  x (@) .  .  .  .  .  x  . 
+ . (@) @  @  @  .  .  .  x  x 
+ .  .  @  @  @  @  .  .  .  . 
+ .  x  .  @  @  @  @  .  .  . 
+ .  . (@) @  @  @  @  @  .  . 
+ .  .  .  @  .  @  .  @  @  x 
+ .  . (@) @  @  .  @  @  @ (@)
+ .  .  x  @  @  @  @  @  @  . 
+ .  .  .  .  @  @  @  .  .  . 
+```
+
+Remove 5 rolls of paper:
+```
+ .  .  .  .  .  .  .  .  .  . 
+ .  .  x  .  .  .  .  .  .  . 
+ .  x (@) @  @  .  .  .  .  . 
+ .  .  @  @  @  @  .  .  .  . 
+ .  .  .  @  @  @  @  .  .  . 
+ .  .  x  @  @  @  @  @  .  . 
+ .  .  .  @  .  @  .  @  @  . 
+ .  .  x  @  @  .  @  @  @  x 
+ .  .  .  @  @  @  @  @ (@) . 
+ .  .  .  .  @  @  @  .  .  . 
+```
+
+Remove 2 rolls of paper:
+```
+ .  .  .  .  .  .  .  .  .  . 
+ .  .  .  .  .  .  .  .  .  . 
+ .  .  x  @  @  .  .  .  .  . 
+ .  . (@) @  @  @  .  .  .  . 
+ .  .  .  @  @  @  @  .  .  . 
+ .  .  .  @  @  @  @  @  .  . 
+ .  .  .  @  .  @  .  @  @  . 
+ .  .  .  @  @  .  @  @  @  . 
+ .  .  .  @  @  @  @  @  x  . 
+ .  .  .  .  @  @  @  .  .  . 
+```
+
+Remove 1 roll of paper:
+```
+ .  .  .  .  .  .  .  .  .  . 
+ .  .  .  .  .  .  .  .  .  . 
+ .  .  . (@) @  .  .  .  .  . 
+ .  .  x  @  @  @  .  .  .  . 
+ .  .  .  @  @  @  @  .  .  . 
+ .  .  .  @  @  @  @  @  .  . 
+ .  .  .  @  .  @  .  @  @  . 
+ .  .  .  @  @  .  @  @  @  . 
+ .  .  .  @  @  @  @  @  .  . 
+ .  .  .  .  @  @  @  .  .  . 
+```
+
+Remove 1 roll of paper:
+```
+ .  .  .  .  .  .  .  .  .  . 
+ .  .  .  .  .  .  .  .  .  . 
+ .  .  .  x (@) .  .  .  .  . 
+ .  .  .  @  @  @  .  .  .  . 
+ .  .  .  @  @  @  @  .  .  . 
+ .  .  .  @  @  @  @  @  .  . 
+ .  .  .  @  .  @  .  @  @  . 
+ .  .  .  @  @  .  @  @  @  . 
+ .  .  .  @  @  @  @  @  .  . 
+ .  .  .  .  @  @  @  .  .  . 
+```
+
+Remove 1 roll of paper:
+```
+ .  .  .  .  .  .  .  .  .  . 
+ .  .  .  .  .  .  .  .  .  . 
+ .  .  .  .  x  .  .  .  .  . 
+ .  .  . (@) @  @  .  .  .  . 
+ .  .  .  @  @  @  @  .  .  . 
+ .  .  .  @  @  @  @  @  .  . 
+ .  .  .  @  .  @  .  @  @  . 
+ .  .  .  @  @  .  @  @  @  . 
+ .  .  .  @  @  @  @  @  .  . 
+ .  .  .  .  @  @  @  .  .  . 
+```
+
+Remove 1 roll of paper:
+```
+ .  .  .  .  .  .  .  .  .  . 
+ .  .  .  .  .  .  .  .  .  . 
+ .  .  .  .  .  .  .  .  .  . 
+ .  .  .  x  @  @  .  .  .  . 
+ .  .  .  @  @  @  @  .  .  . 
+ .  .  .  @  @  @  @  @  .  . 
+ .  .  .  @  .  @  .  @  @  . 
+ .  .  .  @  @  .  @  @  @  . 
+ .  .  .  @  @  @  @  @  .  . 
+ .  .  .  .  @  @  @  .  .  . 
+```
+
+Stop once no more rolls of paper are accessible by a forklift. In this example, a total of 43 rolls of paper can be removed.
+
+Start with your original diagram. How many rolls of paper in total can be removed by the Elves and their forklifts?
+> **My Answer**: 8713
+#### [Code](https://github.com/Kabiirk/advent-of-code-2025-entries/blob/main/Day04/Day4Part2.py)

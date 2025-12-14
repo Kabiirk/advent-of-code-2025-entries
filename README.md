@@ -4,7 +4,7 @@ My solutions to Programming Puzzles featured on [Advent of code](https://advento
 #### [Day 1](https://github.com/Kabiirk/advent-of-code-2025-entries/tree/main/Day01)
 #### [Day 2](https://github.com/Kabiirk/advent-of-code-2025-entries/tree/main/Day02)
 #### [Day 3](https://github.com/Kabiirk/advent-of-code-2025-entries/tree/main/Day03)
-#### [Day 4](https://github.com/Kabiirk/advent-of-code-2020-entries/tree/main/Day04)
+#### [Day 4](https://github.com/Kabiirk/advent-of-code-2025-entries/tree/main/Day04)
 #### [Day 5](https://github.com/Kabiirk/advent-of-code-2020-entries/tree/main/Day05)
 #### [Day 6](https://github.com/Kabiirk/advent-of-code-2020-entries/tree/main/Day06)
 #### [Day 7](https://github.com/Kabiirk/advent-of-code-2020-entries/tree/main/Day07)

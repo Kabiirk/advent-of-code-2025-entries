@@ -1,107 +1,89 @@
-import re
+# Data Parsing & Setup
+paper_roll_rows = []
+with open('test.txt', 'r') as f:
+    for line in f:
+        line = line.strip()
+        paper_roll_rows.append(list(line))
+f.close()
 
-day4 = open("day4.txt", "r")
+# Helper Functions
+def print_floor( roll_rows ):
+    for r in roll_rows:
+        print(''.join(r))
 
-#combine all entries in 1 string
-entries = ""
-for line in day4:
-    entries += line
-day4.close()
+def can_move(h, w):
+    surround_score = 0 # How many paper rolls surround each role
+    for d_h, d_w in dirs:
+        if 0 <= h + d_h < HEIGHT and 0 <= w + d_w < WIDTH:
+            if paper_roll_rows[ h+d_h ][ w+d_w ]=='@':
+                surround_score += 1
+    if surround_score<4:
+        return [h, w]
+    return [-1,-1]
 
-#Split into list with empty line as delimiter which is essentially 2 newlines
-passports = entries.split("\n\n") # => [string1, string2, ......]
+# Actual Solution
+paper_rolls_can_move = 0
+HEIGHT = len(paper_roll_rows)
+WIDTH = len(paper_roll_rows[0])
+queue = []
+removed = set()
+dirs = [
+            [-1, -1], # Top Left
+            [-1, 0], # Top
+            [-1, 1], # Top Right
+            [0, -1], # Left
+            [0, 1], # Right
+            [+1, -1], # Bottom Left
+            [+1, 0], # Bottom
+            [+1, +1], # Bottom right
+       ]
 
-for i in range(len(passports)):
-    passports[i] = passports[i].replace("\n"," ") #each password is now just a 1-liner string with fields separated by space
-    # What the above line does is
-    # 
-    # "hcl:#888785
-    # hgt:164cm byr:2001 iyr:2015 cid:88   ===>   "hcl:#888785 hgt:164cm byr:2001 iyr:2015 cid:88 pid:545766238 ecl:hzl eyr:2022"
-    # pid:545766238 ecl:hzl eyr:2022"
+# 1st Pass
+for h in range(HEIGHT):
+    for w in range(WIDTH):
+        if paper_roll_rows[h][w]=='@':
+            res = can_move(h, w)
+            if res[0]!=-1:
+                queue.append([h,w])
+                removed.add((h,w))
+                paper_rolls_can_move+=1
+for x,y in queue:
+    paper_roll_rows[x][y] = 'x'
 
-def validPassport(l):
-    #Find Values of fields and put them in a list
-    byr = re.findall(r'byr:(\d+)',l)
-    iyr = re.findall(r'iyr:(\d+)',l)
-    eyr = re.findall(r'eyr:(\d+)',l)
-    hgt = re.findall(r'hgt:(\d+)(\w+)',l) #This gives a list of Tuple i.e. [(value1, value2)]
-    hcl = re.findall(r'hcl:(#\w+)',l)
-    ecl = re.findall(r'ecl:(\w+)',l)
-    pid = re.findall(r'pid:(\d+)',l)
+# Uncomment to see 1st pass of Simultation
+# print_floor(paper_roll_rows)
+# print('===============')
 
-    is_false = []
+# Subsequent passes (Multi-source BFS)
+while queue:
+    # Pop all roll coordinates from same 'level'/pass of removed rolls
+    temp_queue = [] # Temp queue to hold neighbors of all rolls removed at the same pass, we check these co-ords in next pass
+    t = 0
+    for i in range(len(queue)):
+        # Traverse all removed rolls at thegiven pass
+        h = queue[i][0]
+        w = queue[i][1]
+        nei = []
+        for dh, dw in dirs:
+            # Generate valid neighbors (in floor bounds, and has a roll which hasn't been removed)
+            if 0 <= h+dh < HEIGHT and 0 <= w+dw < WIDTH and paper_roll_rows[h+dh][w+dw]=='@':
+                nei.append([h+dh, w+dw])
 
-    #byr
-    if(len(byr)!=0):
-        if(int(byr[0])>=1920 and int(byr[0])<=2002):
-            pass
-        else:
-            is_false.append("byr_False")
-    else:
-        is_false.append("byr_empty")
+        for nh, nw in nei:
+            # Check if neighbor valid to remove
+            res = can_move(nh, nw)
+            if res[0]!=-1 and (nh, nw) not in removed:
+                removed.add((nh, nw)) # Populate next level of rolls (neighbor of active rolls)
+                temp_queue.append([nh, nw])
+                paper_rolls_can_move+=1
+                t+=1
+    queue = temp_queue # Assign next level of rolls as current(moving onto all neighbors of rolls removed in the previous pass)
+    for x,y in queue:
+        paper_roll_rows[x][y] = 'x'
 
-    #iyr
-    if(len(iyr)!=0):
-        if(int(iyr[0])>=2010 and int(iyr[0])<=2020):
-            pass
-        else:
-            is_false.append("iyr_False")
-    else:
-        is_false.append("iyr_empty")
+    # Uncomment to see subsequent pass of Simultation
+    # print_floor(paper_roll_rows)
+    # print(f'removed {t} rolls.')
+    # print('===============')
 
-    #eyr
-    if(len(eyr)!=0):
-        if(int(eyr[0])>=2020 and int(eyr[0])<=2030):
-            pass
-        else:
-            is_false.append("eyr_False")
-    else:
-        is_false.append("eyr_empty")
-
-    #hgt (This is a Tuple, so tuple indexed first before indexing values)
-    if(len(hgt)!=0):
-        if( (hgt[0][1]=="cm" and int(hgt[0][0])>=150 and int(hgt[0][0])<=193) or (hgt[0][1]=="in" and int(hgt[0][0])>=59 and int(hgt[0][0])<=76) ):
-            pass
-        else:
-            is_false.append("hgt_False")
-    else:
-        is_false.append("hgt_empty")
-
-    #hcl
-    if(len(hcl)!=0):
-        if(len(hcl[0])==7):
-            pass
-        else:
-            is_false.append("hcl_False")
-    else:
-        is_false.append("hcl_empty")
-
-    #ecl
-    if(len(ecl)!=0):
-        if( ecl[0]=="amb" or ecl[0]=="blu" or ecl[0]=="brn" or ecl[0]=="gry" or ecl[0]=="grn" or ecl[0]=="hzl" or ecl[0]=="oth"):
-            pass
-        else:
-            is_false.append("ecl_False")
-    else:
-        is_false.append("ecl_empty")
-
-    #pid
-    if(len(pid)!=0):
-        if(len(pid[0])==9):
-            pass
-        else:
-            is_false.append("pid_False")
-    else:
-        is_false.append("pid_empty")
-
-    if(len(is_false)==0):
-        return True
-    else:
-        return False
-
-counter = 0
-for passport in passports:
-    if(validPassport(passport)):
-        counter+=1
-
-print(counter)
+print(paper_rolls_can_move)
